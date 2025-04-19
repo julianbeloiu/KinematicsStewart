@@ -17,7 +17,21 @@ disp(f(-pi/4))
 
 %% QUESTION 2:
 
+% Plotting f(theta) on [-pi, pi]
+theta_vals = -pi:0.01:pi;
 
+f_vals = f(theta_vals);
+
+figure(1)
+plot(theta_vals, f_vals)
+xlabel('\theta (radians)')
+ylabel('f(\theta)')
+title('Plot of f(\theta) on [-\pi, \pi]')
+yline(0, '--r');
+xline(pi/4, '--g', '\pi/4');
+xline(-pi/4, '--g', '-\pi/4');
+
+% Plot clearly shows that there are roots at +/- pi/4
 
 %% QUESTION 3:
 
