@@ -3,10 +3,10 @@
 % Function is at the bottom!!! function out = f(theta)
 
 % Testing theta = pi/4
-disp(f(pi/4))
+f(pi/4)
 
 % Testing theta = -pi/4
-disp(f(-pi/4))
+f(-pi/4)
 
 % Both are close to 0, so we are good
 
