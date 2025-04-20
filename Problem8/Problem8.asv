@@ -1,33 +1,34 @@
 %% QUESTION 8:
 
-% 1. Define base attachment points (fixed)
-B = [...  % Each row is a point (xi, yi, zi)
-    200,   0,   0;
-    100, 175,   0;
-   -100, 175,   0;
-   -200,   0,   0;
-   -100, -175,  0;
-    100, -175,  0
+% 1. Base attachment points (fixed in world frame)
+B = [
+     4.0,  0.0, 0.0;
+     2.0,  3.5, 0.0;
+    -2.0,  3.5, 0.0;
+    -4.0,  0.0, 0.0;
+    -2.0, -3.5, 0.0;
+     2.0, -3.5, 0.0
 ];
 
-% 2. Define platform attachment points (in platform frame)
-P = [... % Each row is a point (xi, yi, zi)
-     100,   0,   0;
-      50,  87,   0;
-     -50,  87,   0;
-    -100,   0,   0;
-     -50, -87,   0;
-      50, -87,   0
+% 2. Platform attachment points (in platform local frame)
+P = [
+     2.0,  0.0, 0.0;
+     1.0,  1.5, 0.0;
+    -1.0,  1.5, 0.0;
+    -2.0,  0.0, 0.0;
+    -1.0, -1.5, 0.0;
+     1.0, -1.5, 0.0
 ];
 
-% 3. Define leg lengths (example values)
-L = [250; 240; 245; 260; 255; 250];  % Length of each leg (kept as-is)
+% 3. Leg lengths (reasonable values in same scale)
+L = [5.0; 4.8; 4.9; 5.2; 5.1; 5.0];
 
-% 4. Objective function to minimize
+% 4. Initial pose guess [x, y, z, alpha, beta, gamma]
+x0 = [0.0; 0.0; 4.0; 0.0; 0.0; 0.0];
+
+% 5. Objective function to minimize
 f_obj = @(x) stewart_error(x, B, P, L);
 
-% 5. Initial guess for pose: [x, y, z, alpha, beta, gamma]
-x0 = [0; 0; 200; 0; 0; 0];  % Start near z = 200 mm, no rotation
 
 % 6. Use fsolve to solve
 options = optimoptions('fsolve', 'Display', 'iter', 'TolFun', 1e-10);
@@ -39,8 +40,7 @@ disp(['x = ', num2str(x_sol(1)), ', y = ', num2str(x_sol(2)), ...
 disp(['alpha = ', num2str(x_sol(4)), ', beta = ', num2str(x_sol(5)), ...
       ', gamma = ', num2str(x_sol(6))])
 
-visualize_stewart(B, P, x_sol);
-% interactive_stewart(B, P);
+interactive_stewart(B, P);
 
 
 %% ALL FUNCTIONS SUPPORTING
@@ -117,12 +117,8 @@ function visualize_stewart(B, P, pose, ax)
                  [B(i,2), P_world(i,2)], ...
                  [B(i,3), P_world(i,3)], 'k--', 'LineWidth', 1.5);
     end
-    
-    % Plot the platform origin
 
-    plot3(ax, pos(1), pos(2), pos(3), 'mo', 'MarkerSize', 8, 'MarkerFaceColor', 'm');
-
-    % legend(ax, 'Base', 'Platform', 'Struts')
+    legend(ax, 'Base', 'Platform', 'Struts')
 end
 
 
