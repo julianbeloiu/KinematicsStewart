@@ -156,7 +156,7 @@ ys = [y_1 y_2 y_3 y_4];
 % Helper function is in the supporting functions section
 
 for i = 1:4
-    draw_pose(5+i, xs(i), ys(i), thetas(i), 4);
+    draw_pose(5+i, xs(i), ys(i), thetas(i), 4, i);
     drawnow;
 end
 
@@ -168,7 +168,7 @@ end
 
 % Here we are changing p2 to 7 and resolving problem 4
 
-% Plotting f_5(theta) on [-pi, pi]
+% Plotting f(theta) on [-pi, pi]
 theta_vals = -pi:0.01:pi;
 
 f_vals = f_variable_p2(theta_vals, 7); % p2=7
@@ -238,7 +238,7 @@ ys = [y_1 y_2 y_3 y_4 y_5 y_6];
 % Helper function is in the supporting functions section
 
 for i = 1:6
-    draw_pose(11+i, xs(i), ys(i), thetas(i), 5);
+    draw_pose(11+i, xs(i), ys(i), thetas(i), 5, i);
     drawnow;
 end
 
@@ -247,12 +247,76 @@ end
 
 %% QUESTION 6:
 
-% Through trial and error, it was found that a strut length of p2=4, for
-% which there are only two poses
+% Now we need to find a strut length p2, for which there are only two
+% poses. It is found that when p2=4,  there are only two poses 
 
+theta_vals = -pi:0.01:pi;
+p2_range = 1:7;  % Test p2 values between 1 and 7
+target_num_roots = 2;
+found = false;
 
+for p2 = p2_range
+    f_vals = f_variable_p2(theta_vals, p2);
+    sign_changes = sum(abs(diff(sign(f_vals))) == 2);  % # of times f(theta) crosses 0
+    if sign_changes == target_num_roots
+        fprintf("Found p2 = %.2f with exactly %d poses\n", p2, target_num_roots);
+        found = true;
+        break
+    end
+end
 
+if ~found
+    fprintf("No p2 in range [%0.2f, %0.2f] gives exactly %d poses\n", ...
+        p2_range(1), p2_range(end), target_num_roots);
+end
 
+% Here we are changing p2 to 4
+
+% Plotting f(theta) on [-pi, pi]
+theta_vals = -pi:0.01:pi;
+
+f_vals = f_variable_p2(theta_vals, 4); % p2=4
+
+figure(18)
+plot(theta_vals, f_vals)
+xlabel('\theta (radians)')
+ylabel('f(\theta)')
+title('Plot of f(\theta) on [-\pi, \pi] for Question #6')
+yline(0, '--r');
+drawnow;
+
+% Finding the six theta values (guesses are from eyeballing the graph)
+p2 = 4;
+f_p2 = @(theta) f_variable_p2(theta, p2);
+
+theta1 = fzero(f_p2, 1.32);
+theta2 = fzero(f_p2, 1.77);
+
+thetas = [theta1 theta2];
+
+% theta vals are 1.3316 and 1.7775 rad
+
+% Since we're asked to solve the forward kinematics problem, we need to
+% solve for x and y now (we just solved for theta)
+
+% Finding the x and y coordinates for the four poses 
+[x_1 y_1] = forward_kinematics_variable_p2(theta1, p2);
+[x_2 y_2] = forward_kinematics_variable_p2(theta2, p2);
+
+xs = [x_1 x_2];
+ys = [y_1 y_2];
+
+% It was found that 
+% (x_1, y_1) = (4.8907, 1.0399)
+% (x_2, y_2) = (4.8992, 0.9992)
+
+% Now we need to plot the four poses 
+% Helper function is in the supporting functions section
+
+for i = 1:2
+    draw_pose(18+i, xs(i), ys(i), thetas(i), 6, i);
+    drawnow;
+end
 
 %% QUESTION 7:
 
@@ -356,7 +420,7 @@ function [x, y] = forward_kinematics_variable_p2(theta, p2)
 end
 
 
-function draw_pose(fig_num, x, y, theta, question_number)
+function draw_pose(fig_num, x, y, theta, question_number, pose_index)
     % Constants
     L2 = 3 * sqrt(2);
     L3 = 3;
@@ -386,16 +450,8 @@ function draw_pose(fig_num, x, y, theta, question_number)
     plot([u3 x2], [v3 y2], 'k--')  % p3
 
     % Pose label
-    if question_number == 4
-        pose_index = fig_num - 5;
-        title_str = sprintf('Pose %d (\\theta = %.2f) for Q4', pose_index, theta);
-    elseif question_number == 5
-        pose_index = fig_num - 11;
-        title_str = sprintf('Pose %d (\\theta = %.2f) for Q5', pose_index, theta);
-    else
-        pose_index = fig_num;
-        title_str = sprintf('Pose %d (\\theta = %.2f)', pose_index, theta);
-    end
+    title_str = sprintf('Pose %d (\\theta = %.2f)', pose_index, theta);
+    
 
     title(title_str)
     xlabel('x')
