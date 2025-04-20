@@ -389,8 +389,6 @@ disp(['x = ', num2str(x_sol(1)), ', y = ', num2str(x_sol(2)), ...
 disp(['alpha = ', num2str(x_sol(4)), ', beta = ', num2str(x_sol(5)), ...
       ', gamma = ', num2str(x_sol(6))])
 
-% visualize_stewart(B, P, x_sol);
-
 interactive_stewart(B, P);
 
 
