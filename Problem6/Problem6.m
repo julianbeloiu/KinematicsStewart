@@ -49,6 +49,17 @@ thetas = [theta1 theta2];
 
 % theta vals are 1.3316 and 1.7775 rad
 
+
+figure(30)
+plot(theta_vals, f_vals)
+xlabel('\theta (radians)')
+ylabel('f(\theta)')
+title('Plot of f(\theta) on [-\pi, \pi] with roots')
+yline(0, '--r');
+xline(theta1, '--r', '1.3316');
+xline(theta2, '--r', '1.7775');
+drawnow;
+
 % Since we're asked to solve the forward kinematics problem, we need to
 % solve for x and y now (we just solved for theta)
 
