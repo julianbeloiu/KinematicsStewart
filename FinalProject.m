@@ -5,10 +5,13 @@ clear;
 % function out = f(theta)
 
 % Testing theta = pi/4
-f(pi/4)
+val1 = f(pi/4);
 
 % Testing theta = -pi/4
-f(-pi/4)
+val2 = f(-pi/4);
+
+fprintf('f(pi/4) = %.10f\n', val1);
+fprintf('f(-pi/4) = %.10f\n', val2);
 
 % Both are close to 0, so we are good
 
@@ -320,6 +323,29 @@ end
 
 %% QUESTION 7:
 
+theta_vals = -pi:0.01:pi;
+p2_range = 0:0.01:13;
+pose_counts = zeros(size(p2_range));
+
+for i = 1:length(p2_range)
+    p2 = p2_range(i);
+    f_vals = f_variable_p2(theta_vals, p2);
+    pose_counts(i) = sum(abs(diff(sign(f_vals))) == 2);  % number of real roots
+end
+
+% Plot how the number of real roots changes with p2
+figure(21);
+plot(p2_range, pose_counts, '-o');
+xlabel('p_2 value');
+ylabel('Number of Real Roots (Poses)');
+title('Number of Poses vs. p_2');
+grid on;
+
+% Based on the graph, it appears that:
+% there are 0 poses when p2 < 3.7 and when p2 > 9.27
+% there are 2 poses when 3.7 < p2 < 4.86 and 7.85 < p2 < 9.26
+% there are 4 poses when 4.87 < p2 < 6.96 and 7.03 < p2 < 7.84
+% there are 6 poses when 6.97 < p2 < 7.02
 
 
 %% QUESTION 8:
